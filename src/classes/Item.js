@@ -1,6 +1,6 @@
 import { ctx } from "../index";
 
-class Player {
+class Item {
   constructor(x, y, radius, color) {
     this.x = x;
     this.y = y;
@@ -16,4 +16,4 @@ class Player {
   }
 }
 
-export default Player;
+export default Item;
