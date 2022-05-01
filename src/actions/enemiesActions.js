@@ -84,8 +84,7 @@ const explodePlayer = () => {
   gsap.to(player, {
     alpha: 0,
   });
-  player.explode();
-  for (let i = 0; i < player.alpha * 50; i++) {
+  for (let i = 0; i < player.alpha * 50 - 0.5; i++) {
     particles.push(
       new Particle(player.x, player.y, Math.random() * 2, player.color, {
         x: (Math.random() - 0.5) * Math.random() * 8,

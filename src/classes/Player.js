@@ -17,11 +17,6 @@ class MovingItem extends Item {
     ctx.fill();
     ctx.restore();
   }
-
-  explode() {
-    this.draw();
-    this.alpha -= this.alpha > 0 ? 0.01 : 0;
-  }
 }
 
 export default MovingItem;
