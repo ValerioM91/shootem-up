@@ -1,4 +1,4 @@
-import Item from "./classes/Item";
+import Player from "./classes/Player";
 import { spawnEnemies, enemiesHandler } from "./actions/enemiesActions";
 import {
   shotProjectile,
@@ -18,7 +18,7 @@ export const center = {
   y: canvas.height / 2,
 };
 
-export const player = new Item(center.x, center.y, 20, "white");
+export const player = new Player(center.x, center.y, 20, "white");
 export let projectiles = [];
 export let enemies = [];
 export let particles = [];
@@ -44,18 +44,24 @@ const animate = () => {
   particlesHandler();
 };
 
-canvas.addEventListener("click", shotProjectile);
-
 const modal = document.querySelector(".modal");
 const finalScore = document.querySelector(".finalScore");
 const startGameButton = document.getElementById("startGameButton");
 
 let spawnEnemiesInterval;
+
+let stopGame = false;
+
 const startGame = () => {
   projectiles = [];
   enemies = [];
   particles = [];
   updateScore(-score.current);
+  player.alpha = 1;
+  canvas.addEventListener("click", shotProjectile);
+  document.addEventListener("keydown", explodeAll);
+  document.addEventListener("touchstart", explodeAll);
+  stopGame = false;
   restoreBombs();
   animate();
   spawnEnemiesInterval = spawnEnemies(difficulty);
@@ -63,11 +69,18 @@ const startGame = () => {
 };
 
 export const endGame = () => {
-  cancelAnimationFrame(animationId);
-  finalScore.innerHTML = score.current;
-  updateHighest();
-  modal.style.display = "flex";
+  if (stopGame) return;
   clearInterval(spawnEnemiesInterval);
+  canvas.removeEventListener("click", shotProjectile);
+  document.removeEventListener("keydown", explodeAll);
+  document.removeEventListener("touchstart", explodeAll);
+  setTimeout(() => {
+    cancelAnimationFrame(animationId);
+    finalScore.innerHTML = score.current;
+    updateHighest();
+    modal.style.display = "flex";
+  }, 1500);
+  stopGame = true;
 };
 
 startGameButton.addEventListener("click", startGame);
@@ -78,10 +91,3 @@ if (high) {
   score.high = high;
   document.getElementById("highest").innerHTML = score.high;
 }
-
-document.addEventListener("keydown", (e) => {
-  console.log(e.key);
-  if (e.key === " ") {
-    explodeAll();
-  }
-});

@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import MovingItem from "../classes/MovingItem";
-import { center, player, enemies, projectiles, endGame } from "..";
+import Particle from "../classes/Particle";
+import { center, player, enemies, projectiles, endGame, particles } from "..";
 import { createParticles } from "./particlesActions";
 import { updateScore } from "./scoreActions";
 
@@ -47,6 +48,7 @@ export const enemiesHandler = (difficulty) => {
     const distance = Math.hypot(player.x - enemy.x, player.y - enemy.y);
 
     if (distance - enemy.radius - player.radius < 0) {
+      explodePlayer();
       endGame();
     }
 
@@ -76,4 +78,19 @@ export const enemiesHandler = (difficulty) => {
       }
     });
   });
+};
+
+const explodePlayer = () => {
+  gsap.to(player, {
+    alpha: 0,
+  });
+  player.explode();
+  for (let i = 0; i < player.alpha * 50; i++) {
+    particles.push(
+      new Particle(player.x, player.y, Math.random() * 2, player.color, {
+        x: (Math.random() - 0.5) * Math.random() * 8,
+        y: (Math.random() - 0.5) * Math.random() * 8,
+      })
+    );
+  }
 };

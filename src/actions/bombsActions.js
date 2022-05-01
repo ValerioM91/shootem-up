@@ -2,6 +2,28 @@ import { enemies } from "..";
 import { createParticles } from "./particlesActions";
 import { updateScore } from "./scoreActions";
 
+const bombsContainer = document.querySelector(".bombs");
+
+export const explodeAll = (e) => {
+  if (e.key === " " || (e.touches && e.touches.length > 1)) {
+    if (document.querySelectorAll(".bomb").length === 0) return;
+    const bomb = document.querySelector(".bomb");
+    bomb && bomb.remove();
+
+    enemies.forEach((enemy) => {
+      createParticles(enemy, enemy);
+      setTimeout(() => {
+        updateScore(150 * enemies.length);
+        enemies.splice(0, enemies.length);
+      });
+    });
+  }
+};
+
+export const restoreBombs = () => {
+  bombsContainer.innerHTML = bombSvg + bombSvg + bombSvg;
+};
+
 const bombSvg = `
 <svg
 class="bomb"
@@ -20,23 +42,3 @@ xmlns="http://www.w3.org/2000/svg"
   d="M6 13.5a4.47 4.47 0 0 0 1.318 3.182l1.414-1.414C8.26 14.795 8 14.168 8 13.5s.26-1.295.732-1.768A2.484 2.484 0 0 1 10.5 11V9a4.469 4.469 0 0 0-3.182 1.318A4.47 4.47 0 0 0 6 13.5z"
 ></path>
 </svg>`;
-
-const bombsContainer = document.querySelector(".bombs");
-
-export const explodeAll = () => {
-  if (document.querySelectorAll(".bomb").length === 0) return;
-  const bomb = document.querySelector(".bomb");
-  bomb && bomb.remove();
-
-  enemies.forEach((enemy) => {
-    createParticles(enemy, enemy);
-    setTimeout(() => {
-      updateScore(150 * enemies.length);
-      enemies.splice(0, enemies.length);
-    });
-  });
-};
-
-export const restoreBombs = () => {
-  bombsContainer.innerHTML = bombSvg + bombSvg + bombSvg;
-};
